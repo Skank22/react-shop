@@ -1,0 +1,26 @@
+:local {
+    .wrapHeader {
+        position: relative;
+    }
+
+    .fixHeader {
+        height: 50px;
+    }
+
+    .sticky {
+        position: fixed;
+        top: 0;
+        width: 100%;
+
+        :global(.logoSmall) {
+            top: 11px;
+            width: 55px;
+            height: 48px;
+            transform: rotate(-25deg);
+        }
+
+        :global(.nav-sections) {
+            padding-left: 60px;
+        }
+    }
+}

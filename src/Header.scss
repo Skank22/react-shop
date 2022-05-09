@@ -1,0 +1,30 @@
+.navbar {
+	background: #3197d6;
+	padding: 12px 20px;
+
+	/*.navbar-inner {
+		.logo {
+			display: flex;
+			align-items: center;
+		}
+
+		svg {
+			cursor: pointer;
+			margin-right: 20px;
+		}
+	}*/
+
+	.title {
+		font-size: 20px;
+		font-weight: 500;
+		margin-bottom: 10px;
+	}
+
+	h2 {
+		margin-bottom: 5px;
+	}
+
+	.search-wrap {
+		margin-top: 15px;
+	}
+}

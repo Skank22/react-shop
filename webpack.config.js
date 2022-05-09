@@ -1,69 +1,75 @@
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+
+let mode = 'development';
+let target = 'web';
+if (process.env.NODE_ENV === 'production') {
+	mode = 'production';
+	target = 'browserslist';
+}
+
+const plugins = [
+	new MiniCssExtractPlugin({
+		filename: '[name].[contenthash].css',
+	}),
+	new HtmlWebpackPlugin({
+		template: './src/index.html',
+	}),
+];
+
+if (process.env.SERVE) {
+	plugins.push(new ReactRefreshWebpackPlugin());
+}
 
 module.exports = {
-    entry: [
-        'react-hot-loader/patch',
-        './modules/index'
-    ],
+	mode,
+	target,
+	plugins,
+	devtool: 'source-map',
+	entry: './src/index.js',
+	devServer: {
+		static: './dist',
+		hot: true,
+	},
 
-    output: {
-        path: path.join(__dirname, 'dist'),
-        filename: 'bundle.js'
-    },
+	output: {
+		path: path.resolve(__dirname, 'dist'),
+		assetModuleFilename: 'assets/[hash][ext][query]',
+		clean: true,
+	},
 
-    devtool: 'eval',
-    module: {
-        rules: [
-            {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                use: 'babel-loader'
-            },
-            {
-                test: /\.scss$/,
-                loader: ExtractTextPlugin.extract({
-                    use: [{
-                        loader: 'css-loader'
-                    }, {
-                        loader: 'sass-loader'
-                    }],
-                    fallback: 'style-loader'
-                })
-            },
-            {
-                test: /\.(jpe?g|png|gif)$/,
-                use: [{
-                    loader: 'url-loader',
-                    options: {
-                        limit: 10000
-                    }
-                }]
-            },
-            {
-                test: /\.(eot|svg|ttf|woff2?|otf)$/,
-                use: 'file-loader'
-            }
-        ]
-    },
-
-    resolve: {
-        extensions: ['*', '.js', '.jsx', '.scss'],
-        modules: ['node_modules', 'modules', 'css']
-    },
-
-    plugins: [
-        new ExtractTextPlugin('styles.css'),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'modules', 'index.html')
-        })
-        //new webpack.optimize.CommonsChunkPlugin({children: true, minChunks: 2, async: true})
-    ],
-
-    devServer: {
-        contentBase: './dist',
-        hot: true
-    }
+	module: {
+		rules: [
+			{ test: /\.(html)$/, use: ['html-loader'] },
+			{
+				test: /\.(s[ac]|c)ss$/i,
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader',
+					'postcss-loader',
+					'sass-loader',
+				],
+			},
+			{
+				test: /\.(png|jpe?g|gif|svg|webp|ico)$/i,
+				type: mode === 'production' ? 'asset' : 'asset/resource',
+			},
+			{
+				test: /\.(woff2?|eot|ttf|otf)$/i,
+				type: 'asset/resource',
+			},
+			{
+				test: /\.jsx?$/,
+				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						cacheDirectory: true,
+					},
+				},
+			},
+		],
+	},
 };

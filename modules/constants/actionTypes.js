@@ -1,1 +1,0 @@
-export const STICKY_HEADER = 'STICKY_HEADER';

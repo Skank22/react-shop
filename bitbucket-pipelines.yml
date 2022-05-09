@@ -1,0 +1,12 @@
+image: node:16.14.0
+
+# Workflow Configuration
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Deploy master
+          script:
+            - chmod +x deploy_dev.sh
+            - ./deploy_dev.sh
